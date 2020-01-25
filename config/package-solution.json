@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "pistl-app-client-side-solution",
+    "id": "85c0a04f-1373-4f7e-8ee0-d8f4b23ee6f5",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false
+  },
+  "paths": {
+    "zippedPackage": "solution/pistl-app.sppkg"
+  }
+}

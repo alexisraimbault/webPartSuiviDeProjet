@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "pistl-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/pistl/PistlWebPart.js",
+          "manifest": "./src/webparts/pistl/PistlWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "PistlWebPartStrings": "lib/webparts/pistl/loc/{locale}.js"
+  }
+}
