@@ -210,9 +210,11 @@ export default class Grid extends React.Component<IGridProps, {currentPage:numbe
                     {renderClosedList}
                 </div>
             </div>
-            <Button text='<<' onClick={this.nextPage.bind(this)} />
-            PAGE {this.state.currentPage + 1}/{this.state.maxPages}
-            <Button text='>>' onClick={this.prevPage.bind(this)} />
+            <div className={styles.paginationContainer}>
+                <Button text='<<' onClick={this.nextPage.bind(this)} />
+                <div className={ styles.paginationText }> page {this.state.currentPage + 1}/{this.state.maxPages}</div>
+                <Button text='>>' onClick={this.prevPage.bind(this)} />
+            </div>
         </div>
         
     );

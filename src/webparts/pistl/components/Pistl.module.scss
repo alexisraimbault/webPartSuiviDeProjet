@@ -61,6 +61,7 @@
     cursor : pointer;
   }
   .artefactName {
+    @include ms-fontColor-white;
     text-transform: capitalize;
   }
   .artefactType {
@@ -86,6 +87,19 @@
     font-size: small;
     text-transform: capitalize;
     margin-bottom : 10px;
+  }
+
+  .paginationContainer{
+    padding : 10px;
+    background-color: $ms-color-themeDark;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  .paginationText{
+    @include ms-fontColor-white;
+    padding: 0px 10px;
   }
 
   .button {
