@@ -3,7 +3,8 @@ import styles from './Pistl.module.scss';
 import { escape } from '@microsoft/sp-lodash-subset';
 import Artefact from './Artefact';
 import {IGridProps} from './IGridProps';
-import { Button} from 'office-ui-fabric-react/lib/Button';
+import {PrimaryButton } from 'office-ui-fabric-react';
+import { Dropdown, DropdownMenuItemType } from 'office-ui-fabric-react/lib/Dropdown';
 import Popup from './Popup';
 
 
@@ -15,16 +16,24 @@ export default class Grid extends React.Component<IGridProps, {currentPage:numbe
         this.state = {
         currentPage : 0,
         maxPages :1,
-        newList : [{name:'artefact1', type:'bug', author:'Alexis', id: 1}, {name:'artefact2', type:'bug', author:'Alexis', id: 2}],
-        resolvedList : [{name:'artefact1', type:'bug', author:'Alexis', id: 3}, {name:'artefact2', type:'bug', author:'Alexis', id: 4}],
-        activeList : [{name:'artefact1', type:'bug', author:'Alexis', id: 5}, {name:'artefact2', type:'bug', author:'Alexis', id: 6}],
-        closedList : [{name:'artefact1', type:'bug', author:'Alexis', id: 7}, {name:'artefact2', type:'bug', author:'Alexis', id: 8}]}
+        newList : [{name:'artefact1', type:'bug', author:'Alexis', id: 1}, {name:'artefact2', type:'task', author:'Alexis', id: 2}],
+        resolvedList : [{name:'artefact3', type:'bug', author:'Alexis', id: 3}, {name:'artefact4', type:'task', author:'Alexis', id: 4}],
+        activeList : [{name:'artefact5', type:'bug', author:'Alexis', id: 5}, {name:'artefact6', type:'task', author:'Alexis', id: 6}],
+        closedList : [{name:'artefact7', type:'bug', author:'Alexis', id: 7}, {name:'artefact8', type:'task', author:'Alexis', id: 8}]}
 
         this.changeList = this.changeList.bind(this);
         this.updateMaxPages = this.updateMaxPages.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.prevPage = this.prevPage.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     } 
+
+    handleChange(event) 
+    {  
+    this.setState({  
+        //TODO
+    });  
+    }
 
     changeList(id, from, to)
     {
@@ -176,7 +185,7 @@ export default class Grid extends React.Component<IGridProps, {currentPage:numbe
   public render(): React.ReactElement<IGridProps> 
   {
     var renderNewList = this.state.newList.slice(Math.min((this.state.currentPage)*4, this.state.newList.length), Math.min(((this.state.currentPage+1)*4), this.state.newList.length)).map((item) => (
-            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
+        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
     ));
 
     var renderActiveList = this.state.activeList.slice(Math.min((this.state.currentPage)*4, this.state.activeList.length), Math.min(((this.state.currentPage+1)*4), this.state.activeList.length)).map((item) => (
@@ -210,13 +219,26 @@ export default class Grid extends React.Component<IGridProps, {currentPage:numbe
                     {renderClosedList}
                 </div>
             </div>
-            <div className={styles.paginationContainer}>
-                <Button text='<<' onClick={this.nextPage.bind(this)} />
-                <div className={ styles.paginationText }> page {this.state.currentPage + 1}/{this.state.maxPages}</div>
-                <Button text='>>' onClick={this.prevPage.bind(this)} />
-            </div>
+            <div className={styles.bottomContainer}>
+                <div className={styles.paginationContainer}>
+                    <PrimaryButton text='<<' onClick={this.nextPage.bind(this)} />
+                    <div className={ styles.paginationText }> page {this.state.currentPage + 1}/{this.state.maxPages}</div>
+                    <PrimaryButton text='>>' onClick={this.prevPage.bind(this)} />
+                </div>
+                <Dropdown 
+                className={ styles.filterDropdown }
+                label='' 
+                defaultSelectedKey={ "new" } 
+                options={ [ { text: 'New',     key: "new" },  
+                            { text: 'Active',    key: "active" },  
+                            { text: 'Resolved',  key: "resolved" },  
+                            { text: 'Closed',   key: "closed" }
+                            ] 
+                } 
+                onChanged={this.handleChange.bind(this) } 
+                />
+              </div>
         </div>
-        
     );
   }
 }

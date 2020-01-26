@@ -7,8 +7,11 @@ import { Button} from 'office-ui-fabric-react/lib/Button';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import Popup from './Popup'
 
+const logo = require('../user.png');
+
 export default class Artefact extends React.Component<IArtefactProps, {showPopup : boolean, selectState:string, oldState:string}> {
 
+  
   constructor(props)
   {  
     super(props);  
@@ -20,8 +23,7 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
   }  
 
   togglePopup(id) 
-  {  
-    console.log("test : togglePopup");
+  { 
     if(this.state.showPopup && (this.state.oldState != this.state.selectState))
     {
       this.props.moveFunction(this.props.id, this.state.oldState, this.state.selectState);
@@ -34,7 +36,6 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
     this.setState({  
           showPopup: !this.state.showPopup 
     });
-    
   }
 
   handleChange(event) 
@@ -58,7 +59,11 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
                 <div className={ styles.artefactType }>{escape(this.props.type)}</div>
               </div>
               <div className={ styles.artefactId }>#{this.props.id}</div>
-              <div className={ styles.artefactAuthor }>{escape(this.props.author)}</div>
+              <div className={ styles.artefactAuthorGroup }>
+                <img className={ styles.artefactAuthorIcon } src = {require('../user.png')}></img>
+                <div className={ styles.artefactAuthor }>{escape(this.props.author)}</div>
+              </div>
+              
               <Dropdown 
               className={ styles.artefactDropDown }
               label='' 
@@ -79,7 +84,10 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
                 <div className={ styles.artefactType }>{escape(this.props.type)}</div>
               </div>
               <div className={ styles.artefactId }>#{this.props.id}</div>
-              <div className={ styles.artefactAuthor }>{escape(this.props.author)}</div>
+              <div className={ styles.artefactAuthorGroup }>
+              <img className={ styles.artefactAuthorIcon } src = {require('../user.png')}></img>
+                <div className={ styles.artefactAuthor }>{escape(this.props.author)}</div>
+              </div>
               <Button text='Edit...' onClick={this.togglePopup.bind(this)} /> 
             </div>
             }  
