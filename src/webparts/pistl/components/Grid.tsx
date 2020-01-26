@@ -3,21 +3,27 @@ import styles from './Pistl.module.scss';
 import { escape } from '@microsoft/sp-lodash-subset';
 import Artefact from './Artefact';
 import {IGridProps} from './IGridProps';
+import { Button} from 'office-ui-fabric-react/lib/Button';
 import Popup from './Popup';
 
 
-export default class Grid extends React.Component<IGridProps, {newList : Array<{author:string, name:string, type:string, id: number}>, resolvedList : Array<{author:string, name:string, type:string, id: number}>, activeList : Array<{author:string, name:string, type:string, id: number}>, closedList : Array<{author:string, name:string, type:string, id: number}>}> {
+export default class Grid extends React.Component<IGridProps, {currentPage:number, maxPages:number,newList : Array<{author:string, name:string, type:string, id: number}>, resolvedList : Array<{author:string, name:string, type:string, id: number}>, activeList : Array<{author:string, name:string, type:string, id: number}>, closedList : Array<{author:string, name:string, type:string, id: number}>}> {
 
     constructor(props)
     {  
-      super(props);  
-      this.state = {
-      newList : [{name:'artefact1', type:'bug', author:'Alexis', id: 1}, {name:'artefact2', type:'bug', author:'Alexis', id: 2}],
-      resolvedList : [{name:'artefact1', type:'bug', author:'Alexis', id: 3}, {name:'artefact2', type:'bug', author:'Alexis', id: 4}],
-      activeList : [{name:'artefact1', type:'bug', author:'Alexis', id: 5}, {name:'artefact2', type:'bug', author:'Alexis', id: 6}],
-      closedList : [{name:'artefact1', type:'bug', author:'Alexis', id: 7}, {name:'artefact2', type:'bug', author:'Alexis', id: 8}]}
+        super(props);  
+        this.state = {
+        currentPage : 0,
+        maxPages :1,
+        newList : [{name:'artefact1', type:'bug', author:'Alexis', id: 1}, {name:'artefact2', type:'bug', author:'Alexis', id: 2}],
+        resolvedList : [{name:'artefact1', type:'bug', author:'Alexis', id: 3}, {name:'artefact2', type:'bug', author:'Alexis', id: 4}],
+        activeList : [{name:'artefact1', type:'bug', author:'Alexis', id: 5}, {name:'artefact2', type:'bug', author:'Alexis', id: 6}],
+        closedList : [{name:'artefact1', type:'bug', author:'Alexis', id: 7}, {name:'artefact2', type:'bug', author:'Alexis', id: 8}]}
 
-      this.changeList = this.changeList.bind(this);
+        this.changeList = this.changeList.bind(this);
+        this.updateMaxPages = this.updateMaxPages.bind(this);
+        this.nextPage = this.nextPage.bind(this);
+        this.prevPage = this.prevPage.bind(this);
     } 
 
     changeList(id, from, to)
@@ -40,17 +46,17 @@ export default class Grid extends React.Component<IGridProps, {newList : Array<{
                             case 'active' : 
                                 var tmpTo = [...this.state.activeList];
                                 tmpTo.push(tmpArtefact);
-                                this.setState({activeList : tmpTo});
+                                this.setState({activeList : tmpTo}, this.updateMaxPages);
                                 break;
                             case 'resolved' : 
                                 var tmpTo = [...this.state.resolvedList];
                                 tmpTo.push(tmpArtefact);
-                                this.setState({resolvedList : tmpTo});
+                                this.setState({resolvedList : tmpTo}, this.updateMaxPages);
                                 break;
                             case 'closed' : 
                                 var tmpTo = [...this.state.closedList];
                                 tmpTo.push(tmpArtefact);
-                                this.setState({closedList : tmpTo});
+                                this.setState({closedList : tmpTo}, this.updateMaxPages);
                                 break;
                         }
                     }
@@ -70,17 +76,17 @@ export default class Grid extends React.Component<IGridProps, {newList : Array<{
                                 case 'new' : 
                                     var tmpTo = [...this.state.newList];
                                     tmpTo.push(tmpArtefact);
-                                    this.setState({newList : tmpTo});
+                                    this.setState({newList : tmpTo}, this.updateMaxPages);
                                     break;
                                 case 'resolved' : 
                                     var tmpTo = [...this.state.resolvedList];
                                     tmpTo.push(tmpArtefact);
-                                    this.setState({resolvedList : tmpTo});
+                                    this.setState({resolvedList : tmpTo}, this.updateMaxPages);
                                     break;
                                 case 'closed' : 
                                     var tmpTo = [...this.state.closedList];
                                     tmpTo.push(tmpArtefact);
-                                    this.setState({closedList : tmpTo});
+                                    this.setState({closedList : tmpTo}, this.updateMaxPages);
                                     break;
                             }
                         }
@@ -100,17 +106,17 @@ export default class Grid extends React.Component<IGridProps, {newList : Array<{
                                     case 'active' : 
                                         var tmpTo = [...this.state.activeList];
                                         tmpTo.push(tmpArtefact);
-                                        this.setState({activeList : tmpTo});
+                                        this.setState({activeList : tmpTo}, this.updateMaxPages);
                                         break;
                                     case 'new' : 
                                         var tmpTo = [...this.state.newList];
                                         tmpTo.push(tmpArtefact);
-                                        this.setState({newList : tmpTo});
+                                        this.setState({newList : tmpTo}, this.updateMaxPages);
                                         break;
                                     case 'closed' : 
                                         var tmpTo = [...this.state.closedList];
                                         tmpTo.push(tmpArtefact);
-                                        this.setState({closedList : tmpTo});
+                                        this.setState({closedList : tmpTo}, this.updateMaxPages);
                                         break;
                                 }
                             }
@@ -130,17 +136,17 @@ export default class Grid extends React.Component<IGridProps, {newList : Array<{
                                         case 'active' : 
                                             var tmpTo = [...this.state.activeList];
                                             tmpTo.push(tmpArtefact);
-                                            this.setState({activeList : tmpTo});
+                                            this.setState({activeList : tmpTo}, this.updateMaxPages);
                                             break;
                                         case 'resolved' : 
                                             var tmpTo = [...this.state.resolvedList];
                                             tmpTo.push(tmpArtefact);
-                                            this.setState({resolvedList : tmpTo});
+                                            this.setState({resolvedList : tmpTo}, this.updateMaxPages);
                                             break;
                                         case 'new' : 
                                             var tmpTo = [...this.state.newList];
                                             tmpTo.push(tmpArtefact);
-                                            this.setState({newList : tmpTo});
+                                            this.setState({newList : tmpTo}, this.updateMaxPages);
                                             break;
                                     }
                                 }
@@ -149,35 +155,64 @@ export default class Grid extends React.Component<IGridProps, {newList : Array<{
         }
     }
 
-    
-  public render(): React.ReactElement<IGridProps> {
-    return (
+    updateMaxPages()
+    {
+        var newMaxPages = Math.ceil(Math.max(this.state.newList.length, this.state.activeList.length, this.state.resolvedList.length, this.state.closedList.length)/4.0);
+        this.setState({maxPages:newMaxPages});
+    }
 
-        <div className={ styles.row }>
-        <div className={ styles.column }>
-            <span className={ styles.title }>New</span>
-           {this.state.newList.map((item) => (
-                <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
-            ))}
-        </div>
-        <div className={ styles.column }>
-            <span className={ styles.title }>Active</span>
-            {this.state.activeList.map((item) => (
-                <Artefact author = {item.author} type = {item.type} name = {item.name} state = "active" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
-            ))}
-        </div>
-        <div className={ styles.column }>
-            <span className={ styles.title }>Resolved</span>
-            {this.state.resolvedList.map((item) => (
-                <Artefact author = {item.author} type = {item.type} name = {item.name} state = "resolved" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
-            ))}
-        </div>
-        <div className={ styles.column }>
-            <span className={ styles.title }>Closed</span>
-            {this.state.closedList.map((item) => (
-                <Artefact author = {item.author} type = {item.type} name = {item.name} state = "closed" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
-            ))}
-        </div>
+    nextPage()
+    {
+        var nexPage = (this.state.currentPage + 1)%this.state.maxPages;
+        this.setState({currentPage:nexPage});
+    }
+
+    prevPage()
+    {
+        var prevPage = (this.state.currentPage - 1 + this.state.maxPages)%this.state.maxPages;
+        this.setState({currentPage:prevPage});
+    }
+    
+  public render(): React.ReactElement<IGridProps> 
+  {
+    var renderNewList = this.state.newList.slice(Math.min((this.state.currentPage)*4, this.state.newList.length), Math.min(((this.state.currentPage+1)*4), this.state.newList.length)).map((item) => (
+            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
+    ));
+
+    var renderActiveList = this.state.activeList.slice(Math.min((this.state.currentPage)*4, this.state.activeList.length), Math.min(((this.state.currentPage+1)*4), this.state.activeList.length)).map((item) => (
+        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "active" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
+    ));
+
+    var renderResolvedList = this.state.resolvedList.slice(Math.min((this.state.currentPage)*4, this.state.resolvedList.length), Math.min(((this.state.currentPage+1)*4), this.state.resolvedList.length)).map((item) => (
+        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "resolved" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
+    ));
+
+    var renderClosedList = this.state.closedList.slice(Math.min((this.state.currentPage)*4, this.state.closedList.length), Math.min(((this.state.currentPage+1)*4), this.state.closedList.length)).map((item) => (
+        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "closed" id = {item.id} moveFunction = {this.changeList.bind(this)}/>
+    ));
+    return (
+        <div>
+            <div className={ styles.row }>
+                <div className={ styles.column }>
+                    <span className={ styles.title }>New</span>
+                {renderNewList}
+                </div>
+                <div className={ styles.column }>
+                    <span className={ styles.title }>Active</span>
+                    {renderActiveList}
+                </div>
+                <div className={ styles.column }>
+                    <span className={ styles.title }>Resolved</span>
+                    {renderResolvedList}
+                </div>
+                <div className={ styles.column }>
+                    <span className={ styles.title }>Closed</span>
+                    {renderClosedList}
+                </div>
+            </div>
+            <Button text='<<' onClick={this.nextPage.bind(this)} />
+            PAGE {this.state.currentPage + 1}/{this.state.maxPages}
+            <Button text='>>' onClick={this.prevPage.bind(this)} />
         </div>
         
     );
