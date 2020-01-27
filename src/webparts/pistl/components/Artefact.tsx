@@ -1,15 +1,17 @@
 import * as React from 'react';
 import styles from './Pistl.module.scss';
 import {IArtefactProps} from './IArtefactProps';
+import CommentList from './CommentList';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { Dropdown, DropdownMenuItemType } from 'office-ui-fabric-react/lib/Dropdown';
 import { Button} from 'office-ui-fabric-react/lib/Button';
+import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import Popup from './Popup'
 
 const logo = require('../user.png');
 
-export default class Artefact extends React.Component<IArtefactProps, {showPopup : boolean, selectState:string, oldState:string}> {
+export default class Artefact extends React.Component<IArtefactProps, {showPopup : boolean, selectState:string, oldState:string, newCommentText : string}> {
 
   
   constructor(props)
@@ -17,10 +19,20 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
     super(props);  
     this.state = {showPopup: false,
                   selectState : escape(this.props.state),
-                  oldState :  escape(this.props.state)};  
+                  oldState :  escape(this.props.state), 
+                  newCommentText : ''};  
       
     this.handleChange = this.handleChange.bind(this);
+    this.changeInputComment = this.changeInputComment.bind(this);
+    this.addComment = this.addComment.bind(this);
   }  
+
+  addComment()
+  {
+    if(this.state.newCommentText != '')
+      this.props.addCommentFunction(this.props.id, this.state.oldState, {author:"Alexis", text:this.state.newCommentText});
+    this.setState({newCommentText:''});
+  }
 
   togglePopup(id) 
   { 
@@ -45,6 +57,14 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
     });  
   }
 
+  changeInputComment(value) 
+  { 
+    console.log("test : " + value);
+    this.setState({  
+      newCommentText: value
+    });  
+  }
+
 
   public render(): React.ReactElement<IArtefactProps> 
   {
@@ -55,15 +75,16 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
             {this.state.showPopup ?  
             <div>
               <div className={ styles.artefactTop }>
-                <div className={ styles.artefactName }>{escape(this.props.name)}</div>
+                <div className={ styles.artefactName }>{this.props.name}</div>
                 <div className={ styles.artefactType }>{escape(this.props.type)}</div>
               </div>
               <div className={ styles.artefactId }>#{this.props.id}</div>
               <div className={ styles.artefactAuthorGroup }>
                 <img className={ styles.artefactAuthorIcon } src = {require('../user.png')}></img>
-                <div className={ styles.artefactAuthor }>{escape(this.props.author)}</div>
+                <div className={ styles.artefactAuthor }>{this.props.author}</div>
               </div>
-              
+              <div className={ styles.artefactAuthor }>{this.props.desc}</div>
+
               <Dropdown 
               className={ styles.artefactDropDown }
               label='' 
@@ -76,19 +97,33 @@ export default class Artefact extends React.Component<IArtefactProps, {showPopup
               } 
               onChanged={this.handleChange.bind(this) } 
               />
-              <Button text='Save...' onClick={this.togglePopup.bind(this)} />
+              <CommentList comments = {this.props.comments}/>
+              <div className={styles.newCommentTextField}>
+                <TextField onChanged={this.changeInputComment.bind(this) } placeholder="new comment..." />
+              </div>
+              <div className={styles.center_margin_top}>
+                <Button text='Add...' onClick={this.addComment.bind(this)} /> 
+              </div>
+              <div className={styles.center_margin_top}>
+                <Button text='Save...' onClick={this.togglePopup.bind(this)} />
+              </div>
             </div>
             :<div>
               <div className={ styles.artefactTop }>
-                <div className={ styles.artefactName }>{escape(this.props.name)}</div>
+                <div className={ styles.artefactName }>{this.props.name}</div>
                 <div className={ styles.artefactType }>{escape(this.props.type)}</div>
               </div>
               <div className={ styles.artefactId }>#{this.props.id}</div>
               <div className={ styles.artefactAuthorGroup }>
-              <img className={ styles.artefactAuthorIcon } src = {require('../user.png')}></img>
-                <div className={ styles.artefactAuthor }>{escape(this.props.author)}</div>
+                <img className={ styles.artefactAuthorIcon } src = {require('../user.png')}></img>
+                <div className={ styles.artefactAuthor }>{this.props.author}</div>
               </div>
-              <Button text='Edit...' onClick={this.togglePopup.bind(this)} /> 
+              <div className={ styles.artefactAuthor }>{this.props.desc}</div>
+
+              <CommentList comments = {this.props.comments}/>
+              <div className={styles.center_margin_top}> 
+                <Button text='Edit...' onClick={this.togglePopup.bind(this)} /> 
+              </div>
             </div>
             }  
         </div>

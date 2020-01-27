@@ -4,6 +4,9 @@ export interface IArtefactProps {
     author: string;
     state: string;
     id: number;
+    comments : Array<{author:string, text:string}>
+    desc:string,
     moveFunction : Function;
+    addCommentFunction : Function;
   }
   

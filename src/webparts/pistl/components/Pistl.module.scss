@@ -96,7 +96,6 @@
   }
   .artefactAuthor {
     font-size: small;
-    text-transform: capitalize;
     margin-left : 5px;
   }
 
@@ -128,6 +127,17 @@
 
   .paginationButton{
     background-color: $ms-color-themePrimary;
+  }
+
+  .newCommentTextField{
+    margin-top : 10px;
+  }
+
+  .center_margin_top{
+    margin-top: 10px;
+    display : flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .button {
