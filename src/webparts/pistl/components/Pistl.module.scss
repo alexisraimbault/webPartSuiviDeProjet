@@ -58,12 +58,12 @@
     margin-top : 20px;
     padding : 10px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
-    cursor : pointer;
   }
   .artefactName {
     @include ms-fontColor-white;
     text-transform: capitalize;
   }
+
   .artefactType {
     text-transform: capitalize;
   }
@@ -97,6 +97,29 @@
   .artefactAuthor {
     font-size: small;
     margin-left : 5px;
+  }
+
+  .artefactDesc{
+    font-size: small;
+    margin-left : 5px;
+    cursor : pointer;
+    text-decoration: none;
+  }
+
+  .artefactDescMarginBottom{
+    font-size: small;
+    margin-left : 5px;
+    cursor : pointer;
+    text-decoration: none;
+    margin-bottom : 10px;
+  }
+
+  .artefactDescMarginBottom:hover{
+    text-decoration: underline;
+  }
+  
+  .artefactDesc:hover{
+    text-decoration: underline;
   }
 
   .paginationContainer{
