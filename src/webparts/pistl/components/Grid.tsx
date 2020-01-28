@@ -9,12 +9,20 @@ import Popup from './Popup';
 
 const page_size = 3.0;
 
-export default class Grid extends React.Component<IGridProps, {currentPage:number, maxPages:number,newList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, resolvedList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, activeList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, closedList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>}> {
+export default class Grid extends React.Component<IGridProps, { 
+    selectFilter: string,
+    currentPage:number, 
+    maxPages:number,
+    newList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, 
+    resolvedList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, 
+    activeList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, 
+    closedList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>}> {
 
     constructor(props)
     {  
         super(props);  
         this.state = {
+        selectFilter: 'All',
         currentPage : 0,
         maxPages :1,
         newList : [{name:'artefact1', desc:'description de l\'artefact', type:'bug', author:'Alexis', id: 1,comments:[{author:"Alexis", text:"comment"}, {author:"Alexis", text:"comment"}]}, {name:'artefact2', desc:'description de l\'artefact', type:'task', author:'Alexis', id: 2,comments:[{author:"Alexis", text:"comment"}]}],
@@ -32,9 +40,10 @@ export default class Grid extends React.Component<IGridProps, {currentPage:numbe
 
     handleChange(event) 
     {  
-    this.setState({  
-        //TODO
+    this.setState({
+        selectFilter : event.key
     });  
+    console.log("state"+this.state.selectFilter)
     }
 
     addComment(id, from, comment)
@@ -237,19 +246,27 @@ export default class Grid extends React.Component<IGridProps, {currentPage:numbe
     
   public render(): React.ReactElement<IGridProps> 
   {
-    var renderNewList = this.state.newList.slice(Math.min((this.state.currentPage)*page_size, this.state.newList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.newList.length)).map((item) => (
+    var renderNewList = this.state.newList.slice(Math.min((this.state.currentPage)*page_size, this.state.newList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.newList.length)).filter((item) => (
+        !(item.type === this.state.selectFilter)
+    )).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
 
-    var renderActiveList = this.state.activeList.slice(Math.min((this.state.currentPage)*page_size, this.state.activeList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.activeList.length)).map((item) => (
+      var renderActiveList = this.state.activeList.slice(Math.min((this.state.currentPage) * page_size, this.state.activeList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.activeList.length)).filter((item) => (
+          !(item.type === this.state.selectFilter)
+      )).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "active" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
 
-    var renderResolvedList = this.state.resolvedList.slice(Math.min((this.state.currentPage)*page_size, this.state.resolvedList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.resolvedList.length)).map((item) => (
+      var renderResolvedList = this.state.resolvedList.slice(Math.min((this.state.currentPage) * page_size, this.state.resolvedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.resolvedList.length)).filter((item) => (
+          !(item.type === this.state.selectFilter)
+      )).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "resolved" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
 
-    var renderClosedList = this.state.closedList.slice(Math.min((this.state.currentPage)*page_size, this.state.closedList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.closedList.length)).map((item) => (
+      var renderClosedList = this.state.closedList.slice(Math.min((this.state.currentPage) * page_size, this.state.closedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.closedList.length)).filter((item) => (
+          !(item.type === this.state.selectFilter)
+      )).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "closed" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
     return (
@@ -281,11 +298,10 @@ export default class Grid extends React.Component<IGridProps, {currentPage:numbe
                 <Dropdown 
                 className={ styles.filterDropdown }
                 label='' 
-                defaultSelectedKey={ "new" } 
-                options={ [ { text: 'New',     key: "new" },  
-                            { text: 'Active',    key: "active" },  
-                            { text: 'Resolved',  key: "resolved" },  
-                            { text: 'Closed',   key: "closed" }
+                defaultSelectedKey={ this.state.selectFilter } 
+                options={ [ { text: '',     key: "" },  
+                            { text: 'Tasks',    key: "bug" },  
+                            { text: 'Bugs',  key: "task" } 
                             ] 
                 } 
                 onChanged={this.handleChange.bind(this) } 
