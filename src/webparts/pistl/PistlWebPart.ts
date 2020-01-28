@@ -17,7 +17,7 @@ import allReducers from './reducers/index';
 
 const accessTokenRequest = {
   scopes: ['https://app.vssps.visualstudio.com/user_impersonation']
-}
+};
 
 var accessToken;
 
@@ -45,19 +45,19 @@ if ( !myMSALObj.getAccount() && !(window.location.href.search("id_token")>=0)) {
   myMSALObj.loginPopup(requestObj).then((loginResponse) => {
     console.log("connexion établie !!!!!!!!!!!!!");
     //
-    myMSALObj.acquireTokenSilent(accessTokenRequest).then(function(accessTokenResponse) {
+    myMSALObj.acquireTokenSilent(accessTokenRequest).then((accessTokenResponse) =>{
       // Acquire token silent success
       // Call API with token
       accessToken = accessTokenResponse.accessToken;
-      console.log("token successfully acquired")
-    }).catch(function (error) {
+      console.log("token successfully acquired");
+    }).catch((error) =>{
         //Acquire token silent failure, and send an interactive request
         if (error.errorMessage.indexOf("interaction_required") !== -1) {
-          myMSALObj.acquireTokenPopup(accessTokenRequest).then(function(accessTokenResponse) {
+          myMSALObj.acquireTokenPopup(accessTokenRequest).then((accessTokenResponse2) =>{
                 // Acquire token interactive success
-            }).catch(function(error) {
+            }).catch((error2) =>{
                 // Acquire token interactive failure
-                console.log(error);
+                console.log(error2);
             });
         }
         console.log(error);
@@ -69,19 +69,19 @@ if ( !myMSALObj.getAccount() && !(window.location.href.search("id_token")>=0)) {
 } else {
   console.log("already connected");
    //
-   myMSALObj.acquireTokenSilent(accessTokenRequest).then(function(accessTokenResponse) {
+   myMSALObj.acquireTokenSilent(accessTokenRequest).then((accessTokenResponse) =>{
     // Acquire token silent success
     // Call API with token
     accessToken = accessTokenResponse.accessToken;
-    console.log("token successfully acquired")
-  }).catch(function (error) {
+    console.log("token successfully acquired");
+  }).catch((error) =>{
       //Acquire token silent failure, and send an interactive request
       if (error.errorMessage.indexOf("interaction_required") !== -1) {
-        myMSALObj.acquireTokenPopup(accessTokenRequest).then(function(accessTokenResponse) {
+        myMSALObj.acquireTokenPopup(accessTokenRequest).then((accessTokenResponse2) => {
               // Acquire token interactive success
-          }).catch(function(error) {
+          }).catch((error2) =>{
               // Acquire token interactive failure
-              console.log(error);
+              console.log(error2);
           });
       }
       console.log(error);
@@ -104,8 +104,8 @@ var options = {
 var graphEndpoint = "https://dev.azure.com/expertime/_apis/projects?api-version=5.1";
 
 fetch(graphEndpoint, options)
-    .then(function (response) {
-      response.text().then(function(data) {
+    .then((response) =>{
+      response.text().then((data) =>{
           console.log("réponse :" + data);
       });
     });

@@ -10,6 +10,6 @@ const allReducers = combineReducers({
     active : activeReducer,
     resolved : resolvedReducer,
     closed : closedReducer
-})
+});
 
 export default allReducers;

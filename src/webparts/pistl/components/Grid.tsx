@@ -28,7 +28,7 @@ export default class Grid extends React.Component<IGridProps, {
         newList : [{name:'artefact1', desc:'description de l\'artefact', type:'bug', author:'Alexis', id: 1,comments:[{author:"Alexis", text:"comment"}, {author:"Alexis", text:"comment"}]}, {name:'artefact2', desc:'description de l\'artefact', type:'task', author:'Alexis', id: 2,comments:[{author:"Alexis", text:"comment"}]}],
         resolvedList : [{name:'artefact3', desc:'description de l\'artefact', type:'bug', author:'Alexis', id: 3,comments:[{author:"Alexis", text:"comment"}]}, {name:'artefact4', desc:'description de l\'artefact', type:'task', author:'Alexis', id: 4,comments:[{author:"Alexis", text:"comment"}]}],
         activeList : [{name:'artefact5', desc:'description de l\'artefact', type:'bug', author:'Alexis', id: 5,comments:[{author:"Alexis", text:"comment"}]}, {name:'artefact6', desc:'description de l\'artefact', type:'task', author:'Alexis', id: 6,comments:[{author:"Alexis", text:"comment" }]}],
-        closedList : [{name:'artefact7', desc:'description de l\'artefact', type:'bug', author:'Alexis', id: 7,comments:[{author:"Alexis", text:"comment"}]}, {name:'artefact8', desc:'description de l\'artefact', type:'task', author:'Alexis', id: 8,comments:[{author:"Alexis", text:"comment" }]}]}
+        closedList : [{name:'artefact7', desc:'description de l\'artefact', type:'bug', author:'Alexis', id: 7,comments:[{author:"Alexis", text:"comment"}]}, {name:'artefact8', desc:'description de l\'artefact', type:'task', author:'Alexis', id: 8,comments:[{author:"Alexis", text:"comment" }]}]};
 
         this.changeList = this.changeList.bind(this);
         this.addComment = this.addComment.bind(this);
@@ -38,16 +38,18 @@ export default class Grid extends React.Component<IGridProps, {
         this.handleChange = this.handleChange.bind(this);
     } 
 
-    handleChange(event) 
+    public handleChange(event) 
     {  
     this.setState({
         selectFilter : event.key
     });  
-    console.log("state"+this.state.selectFilter)
+    console.log("state"+this.state.selectFilter);
     }
 
-    addComment(id, from, comment)
+    public addComment(id, from, comment)
     {
+        var tmpFrom;
+        var tmpTo;
         var cpt = 0;
         switch(from)
         {
@@ -56,7 +58,7 @@ export default class Grid extends React.Component<IGridProps, {
                     {
                         if (this.state.newList[cpt].id == id)
                         {
-                            var tmpFrom = [...this.state.newList];
+                            tmpFrom = [...this.state.newList];
                             tmpFrom[cpt].comments.push(comment);
                             this.setState({newList : tmpFrom});
                         }
@@ -67,7 +69,7 @@ export default class Grid extends React.Component<IGridProps, {
                 {
                     if (this.state.activeList[cpt].id == id)
                     {
-                        var tmpFrom = [...this.state.activeList];
+                        tmpFrom = [...this.state.activeList];
                         tmpFrom[cpt].comments.push(comment);
                         this.setState({activeList : tmpFrom});
                     }
@@ -78,7 +80,7 @@ export default class Grid extends React.Component<IGridProps, {
                 {
                     if (this.state.resolvedList[cpt].id == id)
                     {
-                        var tmpFrom = [...this.state.resolvedList];
+                        tmpFrom = [...this.state.resolvedList];
                         tmpFrom[cpt].comments.push(comment);
                         this.setState({resolvedList : tmpFrom});
                     }
@@ -89,7 +91,7 @@ export default class Grid extends React.Component<IGridProps, {
                 {
                     if (this.state.closedList[cpt].id == id)
                     {
-                        var tmpFrom = [...this.state.closedList];
+                        tmpFrom = [...this.state.closedList];
                         tmpFrom[cpt].comments.push(comment);
                         this.setState({closedList : tmpFrom});
                     }
@@ -98,10 +100,13 @@ export default class Grid extends React.Component<IGridProps, {
         }
     }
 
-    changeList(id, from, to)
+    public changeList(id, from, to)
     {
         console.log('test move function : execute');
         var cpt;
+        var tmpFrom;
+        var tmpTo;
+        var tmpArtefact;
         switch(from)
         {
             case 'new' :
@@ -109,23 +114,23 @@ export default class Grid extends React.Component<IGridProps, {
                 {
                     if (this.state.newList[cpt].id == id)
                     {
-                        var tmpFrom = [...this.state.newList];
-                        var tmpArtefact = tmpFrom.splice(cpt, 1)[0];
+                        tmpFrom = [...this.state.newList];
+                        tmpArtefact = tmpFrom.splice(cpt, 1)[0];
                         this.setState({newList : tmpFrom});
                         switch(to)
                         {
                             case 'active' : 
-                                var tmpTo = [...this.state.activeList];
+                                tmpTo = [...this.state.activeList];
                                 tmpTo.push(tmpArtefact);
                                 this.setState({activeList : tmpTo}, this.updateMaxPages);
                                 break;
                             case 'resolved' : 
-                                var tmpTo = [...this.state.resolvedList];
+                                tmpTo = [...this.state.resolvedList];
                                 tmpTo.push(tmpArtefact);
                                 this.setState({resolvedList : tmpTo}, this.updateMaxPages);
                                 break;
                             case 'closed' : 
-                                var tmpTo = [...this.state.closedList];
+                                tmpTo = [...this.state.closedList];
                                 tmpTo.push(tmpArtefact);
                                 this.setState({closedList : tmpTo}, this.updateMaxPages);
                                 break;
@@ -138,24 +143,24 @@ export default class Grid extends React.Component<IGridProps, {
                     {
                         if (this.state.activeList[cpt].id == id)
                         {
-                            var tmpFrom = [...this.state.activeList];
-                            var tmpArtefact = tmpFrom.splice(cpt, 1)[0];
+                            tmpFrom = [...this.state.activeList];
+                            tmpArtefact = tmpFrom.splice(cpt, 1)[0];
                             this.setState({activeList : tmpFrom});
     
                             switch(to)
                             {
                                 case 'new' : 
-                                    var tmpTo = [...this.state.newList];
+                                    tmpTo = [...this.state.newList];
                                     tmpTo.push(tmpArtefact);
                                     this.setState({newList : tmpTo}, this.updateMaxPages);
                                     break;
                                 case 'resolved' : 
-                                    var tmpTo = [...this.state.resolvedList];
+                                    tmpTo = [...this.state.resolvedList];
                                     tmpTo.push(tmpArtefact);
                                     this.setState({resolvedList : tmpTo}, this.updateMaxPages);
                                     break;
                                 case 'closed' : 
-                                    var tmpTo = [...this.state.closedList];
+                                    tmpTo = [...this.state.closedList];
                                     tmpTo.push(tmpArtefact);
                                     this.setState({closedList : tmpTo}, this.updateMaxPages);
                                     break;
@@ -168,24 +173,24 @@ export default class Grid extends React.Component<IGridProps, {
                         {
                             if (this.state.resolvedList[cpt].id == id)
                             {
-                                var tmpFrom = [...this.state.resolvedList];
-                                var tmpArtefact = tmpFrom.splice(cpt, 1)[0];
+                                tmpFrom = [...this.state.resolvedList];
+                                tmpArtefact = tmpFrom.splice(cpt, 1)[0];
                                 this.setState({resolvedList : tmpFrom});
         
                                 switch(to)
                                 {
                                     case 'active' : 
-                                        var tmpTo = [...this.state.activeList];
+                                        tmpTo = [...this.state.activeList];
                                         tmpTo.push(tmpArtefact);
                                         this.setState({activeList : tmpTo}, this.updateMaxPages);
                                         break;
                                     case 'new' : 
-                                        var tmpTo = [...this.state.newList];
+                                        tmpTo = [...this.state.newList];
                                         tmpTo.push(tmpArtefact);
                                         this.setState({newList : tmpTo}, this.updateMaxPages);
                                         break;
                                     case 'closed' : 
-                                        var tmpTo = [...this.state.closedList];
+                                        tmpTo = [...this.state.closedList];
                                         tmpTo.push(tmpArtefact);
                                         this.setState({closedList : tmpTo}, this.updateMaxPages);
                                         break;
@@ -198,24 +203,24 @@ export default class Grid extends React.Component<IGridProps, {
                             {
                                 if (this.state.closedList[cpt].id == id)
                                 {
-                                    var tmpFrom = [...this.state.closedList];
-                                    var tmpArtefact = tmpFrom.splice(cpt, 1)[0];
+                                    tmpFrom = [...this.state.closedList];
+                                    tmpArtefact = tmpFrom.splice(cpt, 1)[0];
                                     this.setState({closedList : tmpFrom});
             
                                     switch(to)
                                     {
                                         case 'active' : 
-                                            var tmpTo = [...this.state.activeList];
+                                            tmpTo = [...this.state.activeList];
                                             tmpTo.push(tmpArtefact);
                                             this.setState({activeList : tmpTo}, this.updateMaxPages);
                                             break;
                                         case 'resolved' : 
-                                            var tmpTo = [...this.state.resolvedList];
+                                            tmpTo = [...this.state.resolvedList];
                                             tmpTo.push(tmpArtefact);
                                             this.setState({resolvedList : tmpTo}, this.updateMaxPages);
                                             break;
                                         case 'new' : 
-                                            var tmpTo = [...this.state.newList];
+                                            tmpTo = [...this.state.newList];
                                             tmpTo.push(tmpArtefact);
                                             this.setState({newList : tmpTo}, this.updateMaxPages);
                                             break;
@@ -226,19 +231,19 @@ export default class Grid extends React.Component<IGridProps, {
         }
     }
 
-    updateMaxPages()
+    public updateMaxPages()
     {
         var newMaxPages = Math.ceil(Math.max(this.state.newList.length, this.state.activeList.length, this.state.resolvedList.length, this.state.closedList.length)/page_size);
         this.setState({maxPages:newMaxPages});
     }
 
-    nextPage()
+    public nextPage()
     {
         var nexPage = (this.state.currentPage + 1)%this.state.maxPages;
         this.setState({currentPage:nexPage});
     }
 
-    prevPage()
+    public prevPage()
     {
         var prevPage = (this.state.currentPage - 1 + this.state.maxPages)%this.state.maxPages;
         this.setState({currentPage:prevPage});

@@ -7,8 +7,8 @@ const activeReducer = (state = [], action) =>
         case 'REMOVE':
             return state.splice(state.indexOf(action.payload), 1);
         default: // need this for default case
-            return state 
+            return state ;
     }
-}
+};
 
 export default activeReducer;

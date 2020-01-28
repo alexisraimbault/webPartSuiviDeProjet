@@ -1,4 +1,4 @@
 export interface ICommentListProps {
-    comments : Array<{author:string, text:string}>
-  }
+    comments : Array<{author:string, text:string}>;
+}
   

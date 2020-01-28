@@ -20,7 +20,7 @@ import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 
 
-import Popup from './Popup'
+import Popup from './Popup';
 
 const logo = require('../user.png');
 const theme = getTheme();
@@ -93,20 +93,20 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
 
   private _showModal = (): void => {
     this.setState({ showModal: true });
-  };
+  }
 
   private _closeModal = (): void => {
     this.setState({ showModal: false });
-  };
+  }
 
-  addComment()
+  public addComment()
   {
     if(this.state.newCommentText != '')
       this.props.addCommentFunction(this.props.id, this.state.oldState, {author:"Alexis", text:this.state.newCommentText});
     this.setState({newCommentText:''});
   }
 
-  togglePopup(id) 
+  public togglePopup(id) 
   { 
     if(this.state.showPopup && (this.state.oldState != this.state.selectState))
     {
@@ -122,14 +122,14 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
     });
   }
 
-  handleChange(event) 
+  public handleChange(event) 
   {  
     this.setState({  
       selectState: event.key
-    });  
+    });
   }
 
-  changeInputComment(value) 
+  public changeInputComment(value) 
   { 
     console.log("test : " + value);
     this.setState({  
@@ -193,7 +193,7 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
               />
               <CommentList comments = {this.props.comments}/>
               <div className={styles.newCommentTextField}>
-                <TextField onChanged={this.changeInputComment.bind(this) } placeholder="new comment..." />
+                <TextField onChanged={this.changeInputComment.bind(this) } value={this.state.newCommentText} placeholder="new comment..." />
               </div>
               <div className={styles.center_margin_top}>
                 <Button text='Add...' onClick={this.addComment.bind(this)} /> 

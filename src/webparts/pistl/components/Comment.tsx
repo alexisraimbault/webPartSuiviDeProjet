@@ -75,7 +75,7 @@ export default class Comment extends React.Component<ICommentProps, {showModal:b
 
       this.state = {
         showModal:false
-      }
+      };
       
       this._showModal = this._showModal.bind(this);
       this._closeModal = this._closeModal.bind(this);
@@ -83,11 +83,12 @@ export default class Comment extends React.Component<ICommentProps, {showModal:b
   
     private _showModal = (): void => {
       this.setState({ showModal: true });
-    };
+    }
   
     private _closeModal = (): void => {
       this.setState({ showModal: false });
-    };
+    }
+    
     public render(): React.ReactElement<ICommentProps> 
     {
       return (
