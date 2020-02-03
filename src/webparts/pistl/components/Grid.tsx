@@ -40,10 +40,9 @@ export default class Grid extends React.Component<IGridProps, {
 
     public handleChange(event) 
     {  
-    this.setState({
-        selectFilter : event.key
-    });  
-    console.log("state"+this.state.selectFilter);
+        this.setState({
+            selectFilter : event.key
+        },this.updateMaxPages); 
     }
 
     public addComment(id, from, comment)
@@ -233,7 +232,15 @@ export default class Grid extends React.Component<IGridProps, {
 
     public updateMaxPages()
     {
-        var newMaxPages = Math.ceil(Math.max(this.state.newList.length, this.state.activeList.length, this.state.resolvedList.length, this.state.closedList.length)/page_size);
+        var newMaxPages = Math.ceil(Math.max(this.state.newList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).length, this.state.activeList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).length, this.state.resolvedList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).length, this.state.closedList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).length)/page_size);
         this.setState({maxPages:newMaxPages});
     }
 
@@ -251,27 +258,27 @@ export default class Grid extends React.Component<IGridProps, {
     
   public render(): React.ReactElement<IGridProps> 
   {
-    var renderNewList = this.state.newList.slice(Math.min((this.state.currentPage)*page_size, this.state.newList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.newList.length)).filter((item) => (
+    var renderNewList = this.state.newList.filter((item) => (
         !(item.type === this.state.selectFilter)
-    )).map((item) => (
+    )).slice(Math.min((this.state.currentPage)*page_size, this.state.newList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.newList.length)).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
 
-      var renderActiveList = this.state.activeList.slice(Math.min((this.state.currentPage) * page_size, this.state.activeList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.activeList.length)).filter((item) => (
-          !(item.type === this.state.selectFilter)
-      )).map((item) => (
+      var renderActiveList = this.state.activeList.filter((item) => (
+        !(item.type === this.state.selectFilter)
+    )).slice(Math.min((this.state.currentPage) * page_size, this.state.activeList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.activeList.length)).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "active" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
 
-      var renderResolvedList = this.state.resolvedList.slice(Math.min((this.state.currentPage) * page_size, this.state.resolvedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.resolvedList.length)).filter((item) => (
-          !(item.type === this.state.selectFilter)
-      )).map((item) => (
+      var renderResolvedList = this.state.resolvedList.filter((item) => (
+        !(item.type === this.state.selectFilter)
+    )).slice(Math.min((this.state.currentPage) * page_size, this.state.resolvedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.resolvedList.length)).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "resolved" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
 
-      var renderClosedList = this.state.closedList.slice(Math.min((this.state.currentPage) * page_size, this.state.closedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.closedList.length)).filter((item) => (
-          !(item.type === this.state.selectFilter)
-      )).map((item) => (
+      var renderClosedList = this.state.closedList.filter((item) => (
+        !(item.type === this.state.selectFilter)
+    )).slice(Math.min((this.state.currentPage) * page_size, this.state.closedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.closedList.length)).map((item) => (
         <Artefact author = {item.author} type = {item.type} name = {item.name} state = "closed" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
     ));
     return (
