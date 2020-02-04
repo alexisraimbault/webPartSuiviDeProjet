@@ -66,7 +66,9 @@ const iconButtonStyles = mergeStyleSets({
   }
 });
 
-export default class Comment extends React.Component<ICommentProps, {showModal:boolean}> {
+export default class Comment extends React.Component<ICommentProps, {
+  /**boolean to toggle the modal */
+  showModal:boolean}> {
 
   
     constructor(props)
@@ -81,14 +83,23 @@ export default class Comment extends React.Component<ICommentProps, {showModal:b
       this._closeModal = this._closeModal.bind(this);
     }  
   
+    /**
+     * set the state showModal at true
+     */
     private _showModal = (): void => {
       this.setState({ showModal: true });
     }
   
+    /**
+    * set the state showModal at false
+    */
     private _closeModal = (): void => {
       this.setState({ showModal: false });
     }
     
+    /**
+     * render a comment with a modal so it can show a popup
+     */
     public render(): React.ReactElement<ICommentProps> 
     {
       return (

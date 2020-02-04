@@ -11,4 +11,7 @@ const resolvedReducer = (state = [], action) =>
     }
 };
 
+/**
+ * list of elements of the resolved column
+ */
 export default resolvedReducer;

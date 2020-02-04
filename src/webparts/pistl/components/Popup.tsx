@@ -3,6 +3,9 @@ import styles from './Pistl.module.scss';
 import {IPopupProps} from './IPopupProps';
 
 class Popup extends React.Component<IPopupProps, {}>  {  
+  /**
+   * render the popup component
+   */
   public render(): React.ReactElement<IPopupProps> {  
     return (  
       <div className='popup'>  

@@ -12,4 +12,7 @@ const allReducers = combineReducers({
     closed : closedReducer
 });
 
+/**
+ * list of array of elements for the columns
+ */
 export default allReducers;

@@ -11,4 +11,7 @@ const newReducer = (state = [{name:'artefact1', type:'bug', author:'Alexis'}, {n
     }
 };
 
+/**
+ * list of elements of the new column
+ */
 export default newReducer;

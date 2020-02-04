@@ -10,5 +10,7 @@ const closedReducer = (state = [], action) =>
             return state;
     }
 };
-
+/**
+ * list of elements of the closed column
+ */
 export default closedReducer;

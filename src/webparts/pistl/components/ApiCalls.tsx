@@ -11,6 +11,9 @@ const accessTokenRequest = {
 
 var accessToken;
 
+/**
+ * MSAL config settings
+ */
 var msalConfig = {
   auth: {
       clientId: "7b4572a6-5b1a-4a70-85b1-5503236612f0",
@@ -31,6 +34,10 @@ var requestObj = {
 
 class ApiCalls{
 
+    /**
+     * returns all the artefacts of the project.
+     * @param projectId the id of the project selected 
+     */
     public getWorkItems(projectId)
     {
         var headers = new Headers();
@@ -51,6 +58,12 @@ class ApiCalls{
         });
     }
 
+    /**
+     * creates an artefact in the project
+     * @param projectId id of the project
+     * @param type type of the artefact(bug,task,etc...)
+     * @param title the title of the artefact
+     */
     public createWorkItem(projectId, type, title)
     {
         var headers = new Headers();
@@ -74,6 +87,11 @@ class ApiCalls{
         });
     }
 
+    /**
+     * delete an artefact of the project
+     * @param projectId id of the project
+     * @param itemId id of the artefact to delete 
+     */
     public deleteWorkItem(projectId, itemId)
     {
         var headers = new Headers();
@@ -93,6 +111,12 @@ class ApiCalls{
         });
     }
 
+    /**
+     * add a comment to an artefact
+     * @param projectId id of the project
+     * @param itemId id of the artefact to add a comment
+     * @param text content of the comment
+     */
     public addComment(projectId, itemId, text)
     {
         var headers = new Headers();
@@ -113,6 +137,10 @@ class ApiCalls{
         });
     }
 
+    /**
+     * return all possible transitions for the artefact
+     * @param itemId id of the artefact
+     */
     public getWorkItemPossibleTransitions( itemId)
     {
         var headers = new Headers();
@@ -132,6 +160,12 @@ class ApiCalls{
         });
     }
 
+    /**
+     * pass a transition to an artefact in the project
+     * @param projectId id of the project
+     * @param itemId id of the artefact
+     * @param transitionId id of the transition
+     */
     public editWorkItemState(projectId, itemId, transitionId)
     {
         var headers = new Headers();
@@ -153,6 +187,9 @@ class ApiCalls{
         });
     }
 
+    /**
+     * restore the API token for the authentification
+     */
     public getToken()
     {
         

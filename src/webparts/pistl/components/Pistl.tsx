@@ -6,6 +6,9 @@ import Grid from './Grid';
 
 
 export default class Pistl extends React.Component<IPistlProps, {}> {
+  /**
+   * render the Pistl component.
+   */
   public render(): React.ReactElement<IPistlProps> {
     return (
       <div className={ styles.pistl }>

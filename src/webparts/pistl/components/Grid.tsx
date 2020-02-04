@@ -10,12 +10,19 @@ import Popup from './Popup';
 const page_size = 3.0;
 
 export default class Grid extends React.Component<IGridProps, { 
+    /** current selected filter */
     selectFilter: string,
-    currentPage:number, 
+    /** current page for pagination */
+    currentPage:number,
+    /** max item for a page */
     maxPages:number,
+    /** elements in the new column */
     newList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, 
+    /** elements in the resolved column */
     resolvedList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, 
+    /** elements in the active column */
     activeList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, 
+    /** elements in the closed column */
     closedList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>}> {
 
     constructor(props)
@@ -38,6 +45,10 @@ export default class Grid extends React.Component<IGridProps, {
         this.handleChange = this.handleChange.bind(this);
     } 
 
+    /**
+     * Update the filter with the filter selected
+     * @param event element selected on click
+     */
     public handleChange(event) 
     {  
         this.setState({
@@ -45,6 +56,12 @@ export default class Grid extends React.Component<IGridProps, {
         },this.updateMaxPages); 
     }
 
+    /**
+     * Add a comment to an artefact
+     * @param id id of the artefact on which the comment goes
+     * @param from person that writes the comment
+     * @param comment the content of the comment
+     */
     public addComment(id, from, comment)
     {
         var tmpFrom;
@@ -99,6 +116,12 @@ export default class Grid extends React.Component<IGridProps, {
         }
     }
 
+    /**
+     * change the artefact from a column from an other by changing the state
+     * @param id id of the artefact 
+     * @param from old state of the artefact
+     * @param to new state of the artefact
+     */
     public changeList(id, from, to)
     {
         console.log('test move function : execute');
@@ -230,6 +253,9 @@ export default class Grid extends React.Component<IGridProps, {
         }
     }
 
+    /**
+     * update the pagination
+     */
     public updateMaxPages()
     {
         var newMaxPages = Math.ceil(Math.max(this.state.newList.filter((item) => (
@@ -244,82 +270,91 @@ export default class Grid extends React.Component<IGridProps, {
         this.setState({maxPages:newMaxPages});
     }
 
+    /**
+     * update the current page to next one
+     */
     public nextPage()
     {
         var nexPage = (this.state.currentPage + 1)%this.state.maxPages;
         this.setState({currentPage:nexPage});
     }
 
+    /**
+     * update the current page to previous one
+     */
     public prevPage()
     {
         var prevPage = (this.state.currentPage - 1 + this.state.maxPages)%this.state.maxPages;
         this.setState({currentPage:prevPage});
     }
     
-  public render(): React.ReactElement<IGridProps> 
-  {
-    var renderNewList = this.state.newList.filter((item) => (
-        !(item.type === this.state.selectFilter)
-    )).slice(Math.min((this.state.currentPage)*page_size, this.state.newList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.newList.length)).map((item) => (
-        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
-    ));
+    /**
+     * render the component so it render the the columns, the pagination, and the filter dropdown
+     */
+    public render(): React.ReactElement<IGridProps> 
+    {
+        var renderNewList = this.state.newList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).slice(Math.min((this.state.currentPage)*page_size, this.state.newList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.newList.length)).map((item) => (
+            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+        ));
 
-      var renderActiveList = this.state.activeList.filter((item) => (
-        !(item.type === this.state.selectFilter)
-    )).slice(Math.min((this.state.currentPage) * page_size, this.state.activeList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.activeList.length)).map((item) => (
-        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "active" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
-    ));
+        var renderActiveList = this.state.activeList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).slice(Math.min((this.state.currentPage) * page_size, this.state.activeList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.activeList.length)).map((item) => (
+            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "active" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+        ));
 
-      var renderResolvedList = this.state.resolvedList.filter((item) => (
-        !(item.type === this.state.selectFilter)
-    )).slice(Math.min((this.state.currentPage) * page_size, this.state.resolvedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.resolvedList.length)).map((item) => (
-        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "resolved" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
-    ));
+        var renderResolvedList = this.state.resolvedList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).slice(Math.min((this.state.currentPage) * page_size, this.state.resolvedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.resolvedList.length)).map((item) => (
+            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "resolved" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+        ));
 
-      var renderClosedList = this.state.closedList.filter((item) => (
-        !(item.type === this.state.selectFilter)
-    )).slice(Math.min((this.state.currentPage) * page_size, this.state.closedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.closedList.length)).map((item) => (
-        <Artefact author = {item.author} type = {item.type} name = {item.name} state = "closed" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
-    ));
-    return (
-        <div>
-            <div className={ styles.row }>
-                <div className={ styles.column }>
-                    <span className={ styles.title }>New</span>
-                {renderNewList}
+        var renderClosedList = this.state.closedList.filter((item) => (
+            !(item.type === this.state.selectFilter)
+        )).slice(Math.min((this.state.currentPage) * page_size, this.state.closedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.closedList.length)).map((item) => (
+            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "closed" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+        ));
+        return (
+            <div>
+                <div className={ styles.row }>
+                    <div className={ styles.column }>
+                        <span className={ styles.title }>New</span>
+                    {renderNewList}
+                    </div>
+                    <div className={ styles.column }>
+                        <span className={ styles.title }>Active</span>
+                        {renderActiveList}
+                    </div>
+                    <div className={ styles.column }>
+                        <span className={ styles.title }>Resolved</span>
+                        {renderResolvedList}
+                    </div>
+                    <div className={ styles.column }>
+                        <span className={ styles.title }>Closed</span>
+                        {renderClosedList}
+                    </div>
                 </div>
-                <div className={ styles.column }>
-                    <span className={ styles.title }>Active</span>
-                    {renderActiveList}
-                </div>
-                <div className={ styles.column }>
-                    <span className={ styles.title }>Resolved</span>
-                    {renderResolvedList}
-                </div>
-                <div className={ styles.column }>
-                    <span className={ styles.title }>Closed</span>
-                    {renderClosedList}
+                <div className={styles.bottomContainer}>
+                    <div className={styles.paginationContainer}>
+                        <PrimaryButton text='<<' onClick={this.prevPage.bind(this)} />
+                        <div className={ styles.paginationText }> page {this.state.currentPage + 1}/{this.state.maxPages}</div>
+                        <PrimaryButton text='>>' onClick={this.nextPage.bind(this)} />
+                    </div>
+                    <Dropdown 
+                    className={ styles.filterDropdown }
+                    label='' 
+                    defaultSelectedKey={ this.state.selectFilter } 
+                    options={ [ { text: '',     key: "" },  
+                                { text: 'Tasks',    key: "bug" },  
+                                { text: 'Bugs',  key: "task" } 
+                                ] 
+                    } 
+                    onChanged={this.handleChange.bind(this) } 
+                    />
                 </div>
             </div>
-            <div className={styles.bottomContainer}>
-                <div className={styles.paginationContainer}>
-                    <PrimaryButton text='<<' onClick={this.prevPage.bind(this)} />
-                    <div className={ styles.paginationText }> page {this.state.currentPage + 1}/{this.state.maxPages}</div>
-                    <PrimaryButton text='>>' onClick={this.nextPage.bind(this)} />
-                </div>
-                <Dropdown 
-                className={ styles.filterDropdown }
-                label='' 
-                defaultSelectedKey={ this.state.selectFilter } 
-                options={ [ { text: '',     key: "" },  
-                            { text: 'Tasks',    key: "bug" },  
-                            { text: 'Bugs',  key: "task" } 
-                            ] 
-                } 
-                onChanged={this.handleChange.bind(this) } 
-                />
-              </div>
-        </div>
-    );
-  }
+        );
+    }
 }

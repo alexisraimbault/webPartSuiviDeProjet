@@ -15,12 +15,18 @@ import * as Msal from 'msal';
 
 import allReducers from './reducers/index';
 
+/**
+ * Authorisation
+ */
 const accessTokenRequest = {
   scopes: ['https://app.vssps.visualstudio.com/user_impersonation']
 };
 
 var accessToken;
 
+/**
+ * MSAL config settings
+ */
 var msalConfig = {
   auth: {
       clientId: "7b4572a6-5b1a-4a70-85b1-5503236612f0",
@@ -41,6 +47,9 @@ if(window.location.href.search("id_token")>=0)
 {
   window.close();
 }
+/**
+ * acquire the user logins to connect to a Microsoft account
+ */
 if ( !myMSALObj.getAccount() && !(window.location.href.search("id_token")>=0)) { // if we have no user
   myMSALObj.loginPopup(requestObj).then((loginResponse) => {
     console.log("connexion établie !!!!!!!!!!!!!");
@@ -116,6 +125,9 @@ export interface IPistlWebPartProps {
 
 export default class PistlWebPart extends BaseClientSideWebPart<IPistlWebPartProps> {
 
+  /**
+   * render the webPart for the sharepoint
+   */
   public render(): void {
     const element: React.ReactElement<IPistlProps > = React.createElement(
       Pistl,

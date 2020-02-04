@@ -72,7 +72,17 @@ const iconButtonStyles = mergeStyleSets({
   }
 });
 
-export default class Artefact extends React.Component<IArtefactProps, {showModal:boolean, showPopup : boolean, selectState:string, oldState:string, newCommentText : string}> {
+export default class Artefact extends React.Component<IArtefactProps, 
+  {/** boolean to toggle the modal */
+   showModal:boolean,
+   /** boolean to toggle the popup */
+   showPopup : boolean, 
+   /** selected state on the dropdown */
+   selectState:string, 
+   /** current state */
+   oldState:string, 
+  /** text of the comment */
+   newCommentText : string}> {
 
   
   constructor(props)
@@ -91,14 +101,23 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
     this._closeModal = this._closeModal.bind(this);
   }  
 
+  /**
+  * set the showModal prop to true
+  */
   private _showModal = (): void => {
     this.setState({ showModal: true });
   }
 
+  /**
+   * set the showModal prop to false
+   */
   private _closeModal = (): void => {
     this.setState({ showModal: false });
   }
 
+  /**
+   * add a comment to the artefact and set the state of the newCommentText to empty.
+   */
   public addComment()
   {
     if(this.state.newCommentText != '')
@@ -106,6 +125,10 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
     this.setState({newCommentText:''});
   }
 
+  /**
+   * toggle the showPopup props on/off
+   * @param id id of the artefact selected
+   */
   public togglePopup(id) 
   { 
     if(this.state.showPopup && (this.state.oldState != this.state.selectState))
@@ -122,6 +145,10 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
     });
   }
 
+  /**
+   * update the state prop of the artefact
+   * @param event selected state 
+   */
   public handleChange(event) 
   {  
     this.setState({  
@@ -129,6 +156,10 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
     });
   }
 
+  /**
+   * change the newCommentText prop to the value of the textarea
+   * @param value text of the textarea
+   */
   public changeInputComment(value) 
   { 
     console.log("test : " + value);
@@ -137,7 +168,10 @@ export default class Artefact extends React.Component<IArtefactProps, {showModal
     });  
   }
 
-
+  /**
+   * render an artefact. it shows the informations passed on the props and buttons to setup
+   * modifications on the props
+   */
   public render(): React.ReactElement<IArtefactProps> 
   {
     return (
