@@ -6,6 +6,8 @@ import {IGridProps} from './IGridProps';
 import {PrimaryButton } from 'office-ui-fabric-react';
 import { Dropdown, DropdownMenuItemType } from 'office-ui-fabric-react/lib/Dropdown';
 import Popup from './Popup';
+import ApiCalls from './ApiCalls';
+
 
 const page_size = 3.0;
 
@@ -16,6 +18,8 @@ export default class Grid extends React.Component<IGridProps, {
     currentPage:number,
     /** max item for a page */
     maxPages:number,
+    /** id of the project */
+    projectId:string,
     /** elements in the new column */
     newList : Array<{author:string, desc :string, name:string, type:string, id: number, comments : Array<{author:string, text:string}>}>, 
     /** elements in the resolved column */
@@ -29,6 +33,7 @@ export default class Grid extends React.Component<IGridProps, {
     {  
         super(props);  
         this.state = {
+        projectId:"",
         selectFilter: 'All',
         currentPage : 0,
         maxPages :1,
@@ -64,52 +69,46 @@ export default class Grid extends React.Component<IGridProps, {
      */
     public addComment(id, from, comment)
     {
+        if (!this.props.offlineMode) {
+            ApiCalls.addComment(this.state.projectId, id, comment);
+        }
         var tmpFrom;
         var tmpTo;
         var cpt = 0;
-        switch(from)
-        {
-            case 'new' : 
-                for(cpt = 0; cpt< this.state.newList.length; cpt++)
-                    {
-                        if (this.state.newList[cpt].id == id)
-                        {
-                            tmpFrom = [...this.state.newList];
-                            tmpFrom[cpt].comments.push(comment);
-                            this.setState({newList : tmpFrom});
-                        }
+        switch (from) {
+            case 'new':
+                for (cpt = 0; cpt < this.state.newList.length; cpt++) {
+                    if (this.state.newList[cpt].id == id) {
+                        tmpFrom = [...this.state.newList];
+                        tmpFrom[cpt].comments.push(comment);
+                        this.setState({ newList: tmpFrom });
                     }
+                }
                 break;
-            case 'active' : 
-                for(cpt = 0; cpt< this.state.activeList.length; cpt++)
-                {
-                    if (this.state.activeList[cpt].id == id)
-                    {
+            case 'active':
+                for (cpt = 0; cpt < this.state.activeList.length; cpt++) {
+                    if (this.state.activeList[cpt].id == id) {
                         tmpFrom = [...this.state.activeList];
                         tmpFrom[cpt].comments.push(comment);
-                        this.setState({activeList : tmpFrom});
+                        this.setState({ activeList: tmpFrom });
                     }
                 }
                 break;
-            case 'resolved' : 
-                for(cpt = 0; cpt< this.state.resolvedList.length; cpt++)
-                {
-                    if (this.state.resolvedList[cpt].id == id)
-                    {
+            case 'resolved':
+                for (cpt = 0; cpt < this.state.resolvedList.length; cpt++) {
+                    if (this.state.resolvedList[cpt].id == id) {
                         tmpFrom = [...this.state.resolvedList];
                         tmpFrom[cpt].comments.push(comment);
-                        this.setState({resolvedList : tmpFrom});
+                        this.setState({ resolvedList: tmpFrom });
                     }
                 }
                 break;
-            case 'closed' : 
-                for(cpt = 0; cpt< this.state.closedList.length; cpt++)
-                {
-                    if (this.state.closedList[cpt].id == id)
-                    {
+            case 'closed':
+                for (cpt = 0; cpt < this.state.closedList.length; cpt++) {
+                    if (this.state.closedList[cpt].id == id) {
                         tmpFrom = [...this.state.closedList];
                         tmpFrom[cpt].comments.push(comment);
-                        this.setState({closedList : tmpFrom});
+                        this.setState({ closedList: tmpFrom });
                     }
                 }
                 break;
@@ -122,134 +121,124 @@ export default class Grid extends React.Component<IGridProps, {
      * @param from old state of the artefact
      * @param to new state of the artefact
      */
-    public changeList(id, from, to)
+    public changeList(id, from, to) 
     {
-        console.log('test move function : execute');
+        if (!this.props.offlineMode) {
+            let transitionId = ApiCalls.getWorkItemPossibleTransitions(id);//TODO traitement sur le résultat
+            ApiCalls.editWorkItemState(this.state.projectId, id, transitionId);
+        }
         var cpt;
         var tmpFrom;
         var tmpTo;
         var tmpArtefact;
-        switch(from)
-        {
-            case 'new' :
-                for(cpt = 0; cpt< this.state.newList.length; cpt++)
-                {
-                    if (this.state.newList[cpt].id == id)
-                    {
+        switch (from) {
+            case 'new':
+                for (cpt = 0; cpt < this.state.newList.length; cpt++) {
+                    if (this.state.newList[cpt].id == id) {
                         tmpFrom = [...this.state.newList];
                         tmpArtefact = tmpFrom.splice(cpt, 1)[0];
-                        this.setState({newList : tmpFrom});
-                        switch(to)
-                        {
-                            case 'active' : 
+                        this.setState({ newList: tmpFrom });
+                        switch (to) {
+                            case 'active':
                                 tmpTo = [...this.state.activeList];
                                 tmpTo.push(tmpArtefact);
-                                this.setState({activeList : tmpTo}, this.updateMaxPages);
+                                this.setState({ activeList: tmpTo }, this.updateMaxPages);
                                 break;
-                            case 'resolved' : 
+                            case 'resolved':
                                 tmpTo = [...this.state.resolvedList];
                                 tmpTo.push(tmpArtefact);
-                                this.setState({resolvedList : tmpTo}, this.updateMaxPages);
+                                this.setState({ resolvedList: tmpTo }, this.updateMaxPages);
                                 break;
-                            case 'closed' : 
+                            case 'closed':
                                 tmpTo = [...this.state.closedList];
                                 tmpTo.push(tmpArtefact);
-                                this.setState({closedList : tmpTo}, this.updateMaxPages);
+                                this.setState({ closedList: tmpTo }, this.updateMaxPages);
                                 break;
                         }
                     }
                 }
                 break;
-                case 'active' :
-                    for(cpt = 0; cpt< this.state.activeList.length; cpt++)
-                    {
-                        if (this.state.activeList[cpt].id == id)
-                        {
-                            tmpFrom = [...this.state.activeList];
-                            tmpArtefact = tmpFrom.splice(cpt, 1)[0];
-                            this.setState({activeList : tmpFrom});
-    
-                            switch(to)
-                            {
-                                case 'new' : 
-                                    tmpTo = [...this.state.newList];
-                                    tmpTo.push(tmpArtefact);
-                                    this.setState({newList : tmpTo}, this.updateMaxPages);
-                                    break;
-                                case 'resolved' : 
-                                    tmpTo = [...this.state.resolvedList];
-                                    tmpTo.push(tmpArtefact);
-                                    this.setState({resolvedList : tmpTo}, this.updateMaxPages);
-                                    break;
-                                case 'closed' : 
-                                    tmpTo = [...this.state.closedList];
-                                    tmpTo.push(tmpArtefact);
-                                    this.setState({closedList : tmpTo}, this.updateMaxPages);
-                                    break;
-                            }
+            case 'active':
+                for (cpt = 0; cpt < this.state.activeList.length; cpt++) {
+                    if (this.state.activeList[cpt].id == id) {
+                        tmpFrom = [...this.state.activeList];
+                        tmpArtefact = tmpFrom.splice(cpt, 1)[0];
+                        this.setState({ activeList: tmpFrom });
+
+                        switch (to) {
+                            case 'new':
+                                tmpTo = [...this.state.newList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ newList: tmpTo }, this.updateMaxPages);
+                                break;
+                            case 'resolved':
+                                tmpTo = [...this.state.resolvedList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ resolvedList: tmpTo }, this.updateMaxPages);
+                                break;
+                            case 'closed':
+                                tmpTo = [...this.state.closedList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ closedList: tmpTo }, this.updateMaxPages);
+                                break;
                         }
                     }
-                    break;
-                    case 'resolved' :
-                        for(cpt = 0; cpt< this.state.resolvedList.length; cpt++)
-                        {
-                            if (this.state.resolvedList[cpt].id == id)
-                            {
-                                tmpFrom = [...this.state.resolvedList];
-                                tmpArtefact = tmpFrom.splice(cpt, 1)[0];
-                                this.setState({resolvedList : tmpFrom});
-        
-                                switch(to)
-                                {
-                                    case 'active' : 
-                                        tmpTo = [...this.state.activeList];
-                                        tmpTo.push(tmpArtefact);
-                                        this.setState({activeList : tmpTo}, this.updateMaxPages);
-                                        break;
-                                    case 'new' : 
-                                        tmpTo = [...this.state.newList];
-                                        tmpTo.push(tmpArtefact);
-                                        this.setState({newList : tmpTo}, this.updateMaxPages);
-                                        break;
-                                    case 'closed' : 
-                                        tmpTo = [...this.state.closedList];
-                                        tmpTo.push(tmpArtefact);
-                                        this.setState({closedList : tmpTo}, this.updateMaxPages);
-                                        break;
-                                }
-                            }
+                }
+                break;
+            case 'resolved':
+                for (cpt = 0; cpt < this.state.resolvedList.length; cpt++) {
+                    if (this.state.resolvedList[cpt].id == id) {
+                        tmpFrom = [...this.state.resolvedList];
+                        tmpArtefact = tmpFrom.splice(cpt, 1)[0];
+                        this.setState({ resolvedList: tmpFrom });
+
+                        switch (to) {
+                            case 'active':
+                                tmpTo = [...this.state.activeList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ activeList: tmpTo }, this.updateMaxPages);
+                                break;
+                            case 'new':
+                                tmpTo = [...this.state.newList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ newList: tmpTo }, this.updateMaxPages);
+                                break;
+                            case 'closed':
+                                tmpTo = [...this.state.closedList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ closedList: tmpTo }, this.updateMaxPages);
+                                break;
                         }
-                        break;
-                        case 'closed' :
-                            for(cpt = 0; cpt< this.state.closedList.length; cpt++)
-                            {
-                                if (this.state.closedList[cpt].id == id)
-                                {
-                                    tmpFrom = [...this.state.closedList];
-                                    tmpArtefact = tmpFrom.splice(cpt, 1)[0];
-                                    this.setState({closedList : tmpFrom});
-            
-                                    switch(to)
-                                    {
-                                        case 'active' : 
-                                            tmpTo = [...this.state.activeList];
-                                            tmpTo.push(tmpArtefact);
-                                            this.setState({activeList : tmpTo}, this.updateMaxPages);
-                                            break;
-                                        case 'resolved' : 
-                                            tmpTo = [...this.state.resolvedList];
-                                            tmpTo.push(tmpArtefact);
-                                            this.setState({resolvedList : tmpTo}, this.updateMaxPages);
-                                            break;
-                                        case 'new' : 
-                                            tmpTo = [...this.state.newList];
-                                            tmpTo.push(tmpArtefact);
-                                            this.setState({newList : tmpTo}, this.updateMaxPages);
-                                            break;
-                                    }
-                                }
-                            }
-                            break;
+                    }
+                }
+                break;
+            case 'closed':
+                for (cpt = 0; cpt < this.state.closedList.length; cpt++) {
+                    if (this.state.closedList[cpt].id == id) {
+                        tmpFrom = [...this.state.closedList];
+                        tmpArtefact = tmpFrom.splice(cpt, 1)[0];
+                        this.setState({ closedList: tmpFrom });
+
+                        switch (to) {
+                            case 'active':
+                                tmpTo = [...this.state.activeList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ activeList: tmpTo }, this.updateMaxPages);
+                                break;
+                            case 'resolved':
+                                tmpTo = [...this.state.resolvedList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ resolvedList: tmpTo }, this.updateMaxPages);
+                                break;
+                            case 'new':
+                                tmpTo = [...this.state.newList];
+                                tmpTo.push(tmpArtefact);
+                                this.setState({ newList: tmpTo }, this.updateMaxPages);
+                                break;
+                        }
+                    }
+                }
+                break;
         }
     }
 
@@ -266,8 +255,8 @@ export default class Grid extends React.Component<IGridProps, {
             !(item.type === this.state.selectFilter)
         )).length, this.state.closedList.filter((item) => (
             !(item.type === this.state.selectFilter)
-        )).length)/page_size);
-        this.setState({maxPages:newMaxPages});
+        )).length) / page_size);
+        this.setState({ maxPages: newMaxPages });
     }
 
     /**
@@ -295,63 +284,70 @@ export default class Grid extends React.Component<IGridProps, {
     {
         var renderNewList = this.state.newList.filter((item) => (
             !(item.type === this.state.selectFilter)
-        )).slice(Math.min((this.state.currentPage)*page_size, this.state.newList.length), Math.min(((this.state.currentPage+1)*page_size), this.state.newList.length)).map((item) => (
-            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "new" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+        )).slice(Math.min((this.state.currentPage) * page_size, this.state.newList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.newList.length)).map((item) => (
+            <Artefact author={item.author} type={item.type} name={item.name} state="new" id={item.id} moveFunction={this.changeList.bind(this)} desc={item.desc} comments={item.comments} addCommentFunction={this.addComment.bind(this)} />
         ));
 
         var renderActiveList = this.state.activeList.filter((item) => (
             !(item.type === this.state.selectFilter)
         )).slice(Math.min((this.state.currentPage) * page_size, this.state.activeList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.activeList.length)).map((item) => (
-            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "active" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+            <Artefact author={item.author} type={item.type} name={item.name} state="active" id={item.id} moveFunction={this.changeList.bind(this)} desc={item.desc} comments={item.comments} addCommentFunction={this.addComment.bind(this)} />
         ));
 
         var renderResolvedList = this.state.resolvedList.filter((item) => (
             !(item.type === this.state.selectFilter)
         )).slice(Math.min((this.state.currentPage) * page_size, this.state.resolvedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.resolvedList.length)).map((item) => (
-            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "resolved" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+            <Artefact author={item.author} type={item.type} name={item.name} state="resolved" id={item.id} moveFunction={this.changeList.bind(this)} desc={item.desc} comments={item.comments} addCommentFunction={this.addComment.bind(this)} />
         ));
 
         var renderClosedList = this.state.closedList.filter((item) => (
             !(item.type === this.state.selectFilter)
         )).slice(Math.min((this.state.currentPage) * page_size, this.state.closedList.length), Math.min(((this.state.currentPage + 1) * page_size), this.state.closedList.length)).map((item) => (
-            <Artefact author = {item.author} type = {item.type} name = {item.name} state = "closed" id = {item.id} moveFunction = {this.changeList.bind(this)} desc = {item.desc} comments ={item.comments} addCommentFunction = {this.addComment.bind(this)}/>
+            <Artefact author={item.author} type={item.type} name={item.name} state="closed" id={item.id} moveFunction={this.changeList.bind(this)} desc={item.desc} comments={item.comments} addCommentFunction={this.addComment.bind(this)} />
         ));
         return (
             <div>
-                <div className={ styles.row }>
-                    <div className={ styles.column }>
-                        <span className={ styles.title }>New</span>
-                    {renderNewList}
+                <div className={styles.row}>
+                    <div className={styles.column}>
+                        <span className={styles.title}>New</span>
+                        {renderNewList}
                     </div>
-                    <div className={ styles.column }>
-                        <span className={ styles.title }>Active</span>
+                    <div className={styles.column}>
+                        <span className={styles.title}>Active</span>
                         {renderActiveList}
                     </div>
-                    <div className={ styles.column }>
-                        <span className={ styles.title }>Resolved</span>
+                    <div className={styles.column}>
+                        <span className={styles.title}>Resolved</span>
                         {renderResolvedList}
                     </div>
-                    <div className={ styles.column }>
-                        <span className={ styles.title }>Closed</span>
+                    <div className={styles.column}>
+                        <span className={styles.title}>Closed</span>
                         {renderClosedList}
                     </div>
                 </div>
                 <div className={styles.bottomContainer}>
                     <div className={styles.paginationContainer}>
                         <PrimaryButton text='<<' onClick={this.prevPage.bind(this)} />
-                        <div className={ styles.paginationText }> page {this.state.currentPage + 1}/{this.state.maxPages}</div>
+                        <div className={styles.paginationText}> page {this.state.currentPage + 1}/{this.state.maxPages}</div>
                         <PrimaryButton text='>>' onClick={this.nextPage.bind(this)} />
                     </div>
-                    <Dropdown 
-                    className={ styles.filterDropdown }
-                    label='' 
-                    defaultSelectedKey={ this.state.selectFilter } 
-                    options={ [ { text: '',     key: "" },  
-                                { text: 'Tasks',    key: "bug" },  
-                                { text: 'Bugs',  key: "task" } 
-                                ] 
-                    } 
-                    onChanged={this.handleChange.bind(this) } 
+                    {this.props.offlineMode ?
+
+                        <div>
+                            Mode offline activé
+                </div>
+                        : null
+                    }
+                    <Dropdown
+                        className={styles.filterDropdown}
+                        label=''
+                        defaultSelectedKey={this.state.selectFilter}
+                        options={[{ text: '', key: "" },
+                        { text: 'Tasks', key: "bug" },
+                        { text: 'Bugs', key: "task" }
+                        ]
+                        }
+                        onChanged={this.handleChange.bind(this)}
                     />
                 </div>
             </div>
