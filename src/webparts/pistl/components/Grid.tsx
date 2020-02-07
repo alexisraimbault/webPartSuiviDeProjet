@@ -124,6 +124,7 @@ export default class Grid extends React.Component<IGridProps, {
     public changeList(id, from, to) 
     {
         if (!this.props.offlineMode) {
+            console.log("ici");
             let transitionId = ApiCalls.getWorkItemPossibleTransitions(id);//TODO traitement sur le résultat
             ApiCalls.editWorkItemState(this.state.projectId, id, transitionId);
         }

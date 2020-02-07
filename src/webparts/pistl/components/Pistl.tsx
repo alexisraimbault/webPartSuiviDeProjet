@@ -77,7 +77,7 @@ export default class Pistl extends React.Component<IPistlProps, {
     this.state = {
       offlineMode: false,
       showModal: false
-    }
+    };
   }
 
   /**
@@ -140,6 +140,7 @@ export default class Pistl extends React.Component<IPistlProps, {
             myMSALObj.acquireTokenPopup(accessTokenRequest).then((accessTokenResponse2) => {
               // Acquire token interactive success
             }).catch((error2) => {
+              this.setState({ offlineMode: true });
               // Acquire token interactive failure
               console.log(error2);
             });
@@ -150,6 +151,7 @@ export default class Pistl extends React.Component<IPistlProps, {
         });
         //
       }).catch((error) => {
+        this.setState({ offlineMode: true });
         console.log("connection error : " + error);
       });
     } else {
@@ -170,6 +172,7 @@ export default class Pistl extends React.Component<IPistlProps, {
             console.log(error2);
           });
         }
+        console.log("test");
         this.setState({ offlineMode: true });
         this._showModal();
         console.log(error);
